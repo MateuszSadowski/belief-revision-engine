@@ -13,6 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 """
 
 def dissociate(op, clause):
+    clause = str(clause)
     result = []
 
     def collect(clause):
@@ -21,6 +22,7 @@ def dissociate(op, clause):
             if len(arg.split(op)) > 1:
                 collect(arg)
             else:
+                arg = arg.replace(' ', '')
                 result.append(arg)
     collect(clause)
     return result
@@ -28,28 +30,45 @@ def dissociate(op, clause):
 def disjuncts(clause):
     return dissociate('|', clause)
 
-#     def collect2(clause):
-#   # def pl_resolve(ci, cj):
+def conjuncts(clause):
+    return dissociate('&', clause)
 
-    # """Return all clauses that can be obtained by resolving clauses ci and cj.
-    # >>> pl_resolve(to_cnf(A|B|C), to_cnf(~B|~C|F))
-    # [(A | C | ~C | F), (A | B | ~B | F)]
-    # """
-    # clauses = []
-    # for di in disjuncts(ci):
-    #     for dj in disjuncts(cj):
-    #         if di == ~dj or ~di == dj:
-    #             dnew = unique(removeall(di, disjuncts(ci)) +
-    #                           removeall(dj, disjuncts(cj)))
-    #             clauses.append(NaryExpr('|', *dnew))
-    # return clauses
+def remove_dublicates(value, subset):
+    return [x for x in subset if x != value]
 
-# def Resolve(c1,c2):
-#         #       resolvents = Resolve(Ci,Cj)
-#     clauses = []
-#     for d_c1 in disjuncts(c1):
-#         for d_c2 in disjuncts(c2):
-#             if d_c1 == ~d_c2 or ~d_c1 == d_c2:
-#                 new_disjunct = unique((removeall(d_c1, disjuncts(c1)) + removeall(d_c2, disjuncts(c2))))
-                
-#     return clauses
+def unique_values(subset):
+    return list(set(subset))
+
+def associate(op, clauses):
+    if len(clauses) == 0:
+        return False
+    elif len(clauses) == 1:
+        return clauses[0]
+    else:
+        result = ""
+        for i in range(len(clauses)-1):
+            result += clauses[i] + "|"
+        result += clauses[len(clauses)-1]
+    return result
+
+def resolve(c1,c2):
+    clauses = []
+    resolvedSomething = False
+    for d_c1 in disjuncts(c1):
+        for d_c2 in disjuncts(c2):
+            if (d_c1 == '~' + d_c2) or ('~' + d_c1 == d_c2):
+                new_disjunct = unique_values(remove_dublicates(d_c1, disjuncts(c1)) + remove_dublicates(d_c2, disjuncts(c2)))
+                clauses.append(associate('|', new_disjunct)) 
+                resolvedSomething = True
+
+    if not resolvedSomething:
+        clauses.append(associate('|', [c1, c2]))
+
+    return clauses
+
+
+# c1 = (~p AND q)
+# c2 = ~(p OR ~q)
+
+# p&q --> p AND q
+# (p&q | s) --> (p OR s) AND (q OR s)
