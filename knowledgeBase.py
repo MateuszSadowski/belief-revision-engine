@@ -14,44 +14,19 @@ import helpFunctions
 
 class BeliefBase:
     def __init__(self):
-        # belief.input -> what user inputed in natural form
-        # belief.formula -> belief in CNF form
         self.beliefs = []
-        #[
-        # {
-        # "input": "p >> q",
-        # "formula": "~p | q"
-        # },
-        # {
-        # "input": "p | q",
-        # "formula": "p | q"
-        # }
-        # ]
     
     def print(self):
         print('Current beliefs:')
         for belief in self.beliefs:
-            print(belief["input"])
-            # if belief.input:
-            #     print(belief.input)
-            # else:
-            #     print(belief.formula)
+            print(str(belief))
 
-    def add(self, belief, fromConsole=True):
+    def add(self, base, belief):
         # TODO: validate input
         formula = to_cnf(belief)
-        formula = str(formula)
-        newBelief = {}
-        if fromConsole:
-            newBelief["input"] = belief
-        else:
-            newBelief["input"] = formula
-        newBelief["formula"] = formula
-
-        self.beliefs.append(newBelief)
+        base.append(formula)
 
     def resolution(self, newBelief):
-        # beliefBase = copy.deepcopy(self.beliefs)
         tmpBeliefBase = []
         formula = to_cnf(newBelief)
         neg_formula = to_cnf(~formula)
@@ -59,9 +34,9 @@ class BeliefBase:
         # formula = (q | ~p)
         # ~formula = (~q & p) by De Morgans law
         # q | ~p --> ~q | ~p
-        tmpBeliefBase += helpFunctions.conjuncts(str(neg_formula))
+        tmpBeliefBase += helpFunctions.conjuncts(neg_formula)
         for belief in self.beliefs:
-            tmpBeliefBase += helpFunctions.conjuncts(belief['formula'])
+            tmpBeliefBase += helpFunctions.conjuncts(belief)
         tmpBeliefBase = helpFunctions.removeAllDuplicates(tmpBeliefBase)
 
         result = set()
