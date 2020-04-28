@@ -62,6 +62,7 @@ class BeliefBase:
         tmpBeliefBase += helpFunctions.conjuncts(str(neg_formula))
         for belief in self.beliefs:
             tmpBeliefBase += helpFunctions.conjuncts(belief['formula'])
+        tmpBeliefBase = helpFunctions.removeAllDuplicates(tmpBeliefBase)
 
         result = set()
         while True:

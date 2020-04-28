@@ -33,10 +33,13 @@ def disjuncts(clause):
 def conjuncts(clause):
     return dissociate('&', clause)
 
-def remove_dublicates(value, subset):
+def removeFromList(value, subset):
     return [x for x in subset if x != value]
 
-def unique_values(subset):
+def removeAllDuplicates(x):
+  return list(dict.fromkeys(x))
+
+def uniqueValues(subset):
     return list(set(subset))
 
 def associate(op, clauses):
@@ -57,12 +60,13 @@ def resolve(c1,c2):
     for d_c1 in disjuncts(c1):
         for d_c2 in disjuncts(c2):
             if (d_c1 == '~' + d_c2) or ('~' + d_c1 == d_c2):
-                new_disjunct = unique_values(remove_dublicates(d_c1, disjuncts(c1)) + remove_dublicates(d_c2, disjuncts(c2)))
+                new_disjunct = uniqueValues(removeFromList(d_c1, disjuncts(c1)) + removeFromList(d_c2, disjuncts(c2)))
                 clauses.append(associate('|', new_disjunct)) 
                 resolvedSomething = True
 
     if not resolvedSomething:
-        clauses.append(associate('|', [c1, c2]))
+        new_disjunct = uniqueValues(disjuncts(c1) + disjuncts(c2))
+        clauses.append(associate('|', new_disjunct)) 
 
     return clauses
 
