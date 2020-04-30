@@ -24,12 +24,15 @@ class BeliefBase:
         print('')
 
     def add(self, base, belief, value=-1):
-        # TODO: validate input
+        # TODO: validate input (using resolution(?))
         # TODO: handle the case when value not passed
         formula = to_cnf(belief)
-        base.append(formula)
-        if value != -1:
-            self.values[str(formula)] = value
+        negFormula = ~formula
+        if not self.resolution(base, negFormula):
+            formula = to_cnf(belief)
+            base.append(formula)
+            if value != -1:
+                self.values[str(formula)] = value
 
     def resolution(self, beliefBase, newBelief):
         tmpBeliefBase = []
@@ -104,12 +107,26 @@ class BeliefBase:
         print(remainders)
 
         maxValue = -10**10
+        remainderSum = -10**10
         bestSolution = None
         for r in remainders:
+            tmpSum = sum(self.values[str(c)] for c in r)
             for c in r:
                 tmpValue = self.values[str(c)]
                 if tmpValue > maxValue:
                     maxValue = tmpValue
+                    remainderSum = tmpSum
                     bestSolution = r
-        # TODO: if two solutions have the same value, compare the sum
+                elif tmpValue == maxValue:
+                    if tmpSum > remainderSum:
+                        bestSolution = r
+
         self.beliefs = bestSolution
+
+    def revision(self, belief, value):
+        # TODO: Fix case when adding the same formula or then allow to update values
+        formula = to_cnf(belief)
+        negFormula = ~formula
+        self.contraction(negFormula)
+        self.add(self.beliefs, belief, value)
+        # self.values[str(formula)] = value
