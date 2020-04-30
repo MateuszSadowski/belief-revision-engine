@@ -1,6 +1,6 @@
 from sympy.logic.boolalg import to_cnf, And, Or, Equivalent
 import copy
-from itertools import combinations
+from itertools import combinations,groupby
 
 import helpFunctions
 
@@ -72,7 +72,9 @@ class BeliefBase:
             allBeliefs += helpFunctions.conjuncts(belief)
         allBeliefs = helpFunctions.removeAllDuplicates(allBeliefs)
         def contract(beliefList, beliefToRemove):
-            if len(beliefList) == 0:
+            if len(beliefList) == 1:
+                if not self.resolution(beliefList, beliefToRemove):
+                    solutions.append(beliefList)
                 return
             
             for i in beliefList:
@@ -85,14 +87,13 @@ class BeliefBase:
                     solutions.append(tmp)
         
         contract(allBeliefs, beliefCnf)
-        for s1 in solutions:
-            for s2 in solutions:
-                s1 = set(s1)
-                s2 = set(s2)
-                if s1.issubset(s2):
-                    solutions = helpFunctions.removeFromList(list(s1), solutions)
+
+        # Remove duplicates and solutions that are not maximal (remainders)
+        solutions = helpFunctions.removeSublist(solutions)
+
         return solutions
-            
+
+    # solutions = [for s1]        
 
     # KB is knowledge base # q is new sentence of logic
     # clauses = contra(KB,q) -------> KB & ~a
