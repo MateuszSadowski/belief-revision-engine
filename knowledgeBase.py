@@ -21,6 +21,7 @@ class BeliefBase:
         print('Current beliefs:')
         for belief in self.beliefs:
             print(str(belief) + ', value: ' + str(self.values[str(belief)]))
+        print('')
 
     def add(self, base, belief, value=-1):
         # TODO: validate input
@@ -64,7 +65,7 @@ class BeliefBase:
                 # tmpBeliefBase += list(result)
                 # tmpBeliefBase = helpFunctions.remove_dublicates(tmpBeliefBase)
 
-    def contraction(self, belief):
+    def getRemainders(self, belief):
         beliefCnf = to_cnf(belief)
         if not self.resolution(self.beliefs, beliefCnf):
             # Whole belief base is solution
@@ -97,42 +98,18 @@ class BeliefBase:
 
         return solutions
 
-    # solutions = [for s1]        
+    def contraction(self, belief):
+        remainders = self.getRemainders(belief)
 
-    # KB is knowledge base # q is new sentence of logic
-    # clauses = contra(KB,q) -------> KB & ~a
-    # new = {}
-    # while True:
-    #   for each pair of clauses Ci,Cj in clauses
-    #       resolvents = Resolve(Ci,Cj)
-    #       if resolvents contains the empty clause
-    #           return true
-    #       new += resolvents
-    #       if new is subset of clauses
-    #           return false
-    #       clauses += new
+        print(remainders)
 
-
-    # ==== CONTRACTION ALGORITHM ===
-    # 1. Enumerate all
-    # (p | q) & (~p | z) & p & ~q
-    # remove (p|q)
-    # result: (~p | z) & p & ~q
-    # remove (~p | z)
-    # result: (p | q) & p & ~q
-    
-
-    # "K remainder q" (reversed(T))
-    # for every combination
-    #       apply resolution of q (~q) on combination
-    #       if q not implies
-    #           add to options
-    #       else
-    #           discard
-    # for options
-    #       test for maximum (how?) (maximum in terms of adding behavior)
-    #       try to add every combination of what is in the belief base but not in the option
-    #       and see if it then implies queue
-    #       if it does imply q for anything you can add then it is then maximal
-    # a, b, c 
-    # a,b     a,c     b,c     a      b      c      a,b,c
+        maxValue = -10**10
+        bestSolution = None
+        for r in remainders:
+            for c in r:
+                tmpValue = self.values[str(c)]
+                if tmpValue > maxValue:
+                    maxValue = tmpValue
+                    bestSolution = r
+        # TODO: if two solutions have the same value, compare the sum
+        self.beliefs = bestSolution
