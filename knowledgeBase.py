@@ -15,16 +15,20 @@ import helpFunctions
 class BeliefBase:
     def __init__(self):
         self.beliefs = []
+        self.values = {}
     
     def print(self):
         print('Current beliefs:')
         for belief in self.beliefs:
-            print(str(belief))
+            print(str(belief) + ', value: ' + str(self.values[str(belief)]))
 
-    def add(self, base, belief):
+    def add(self, base, belief, value=-1):
         # TODO: validate input
+        # TODO: handle the case when value not passed
         formula = to_cnf(belief)
         base.append(formula)
+        if value != -1:
+            self.values[str(formula)] = value
 
     def resolution(self, beliefBase, newBelief):
         tmpBeliefBase = []
