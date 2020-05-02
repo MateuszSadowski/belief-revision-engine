@@ -27,15 +27,19 @@ class BeliefBase:
         # TODO: validate input (using resolution(?))
         # TODO: handle the case when value not passed
         formula = to_cnf(belief)
-        if not base:
-            base.append(formula)
-            if value != -1:
-                self.values[str(formula)] = value
-        elif self.resolution(base, formula):
-            if formula not in base:
-                base.append(formula)
-            if value != -1:
-                self.values[str(formula)] = value
+
+        base.append(formula)
+        if value != -1:
+            self.values[str(formula)] = value
+        # if not base:
+        #     base.append(formula)
+        #     if value != -1:
+        #         self.values[str(formula)] = value
+        # elif self.resolution(base, formula):
+        #     if formula not in base:
+        #         base.append(formula)
+        #     if value != -1:
+        #         self.values[str(formula)] = value
 
     def resolution(self, beliefBase, newBelief):
         tmpBeliefBase = []
@@ -78,10 +82,11 @@ class BeliefBase:
             return [self.beliefs]
 
         solutions = []
-        allBeliefs = []
-        for belief in self.beliefs:
-            allBeliefs += helpFunctions.conjuncts(belief)
-        allBeliefs = helpFunctions.removeAllDuplicates(allBeliefs)
+        allBeliefs = self.beliefs
+        # allBeliefs = []
+        # for belief in self.beliefs:
+        #     allBeliefs += helpFunctions.conjuncts(belief)
+        # allBeliefs = helpFunctions.removeAllDuplicates(allBeliefs)
         def contract(beliefList, beliefToRemove):
             if len(beliefList) == 1:
                 if not self.resolution(beliefList, beliefToRemove):
@@ -104,14 +109,14 @@ class BeliefBase:
 
         return solutions
 
-    def contraction(self, belief):
+    def contraction(self, belief, value):
         remainders = self.getRemainders(belief)
 
         print(remainders)
-
+        sumValue = max(self.values.values())
         maxValue = -10**10
-        remainderSum = -10**10
-        bestSolution = None
+        remainderSum = 0.0
+        bestSolution = []
         for r in remainders:
             tmpSum = sum(self.values[str(c)] for c in r)
             for c in r:
@@ -123,13 +128,21 @@ class BeliefBase:
                 elif tmpValue == maxValue:
                     if tmpSum > remainderSum:
                         bestSolution = r
+        maxVals = 0.0
+        for s in bestSolution:
+            if self.values[str(s)] > maxVals:
+                maxVals = self.values[str(s)]
+        if value > maxVals:
+            maxVals = value;
+        if maxVals < sumValue:
+            return
 
         self.beliefs = bestSolution
+        self.add(self.beliefs, ~belief, value)
 
     def revision(self, belief, value):
         # TODO: Fix case when adding the same formula or then allow to update values
         formula = to_cnf(belief)
         negFormula = ~formula
-        self.contraction(negFormula)
-        self.add(self.beliefs, belief, value)
+        self.contraction(negFormula, value)
         # self.values[str(formula)] = value
