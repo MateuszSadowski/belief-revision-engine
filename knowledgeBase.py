@@ -27,10 +27,13 @@ class BeliefBase:
         # TODO: validate input (using resolution(?))
         # TODO: handle the case when value not passed
         formula = to_cnf(belief)
-        negFormula = ~formula
-        if not self.resolution(base, negFormula):
-            formula = to_cnf(belief)
+        if not base:
             base.append(formula)
+            if value != -1:
+                self.values[str(formula)] = value
+        elif self.resolution(base, formula):
+            if formula not in base:
+                base.append(formula)
             if value != -1:
                 self.values[str(formula)] = value
 
