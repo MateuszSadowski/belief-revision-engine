@@ -30,7 +30,6 @@ class BeliefBase:
         self.values = []
 
     def add(self, base, belief, value=-1):
-        # TODO: handle the case when value not passed
         formula = to_cnf(belief)
 
         base.append(formula)
@@ -101,33 +100,35 @@ class BeliefBase:
         remainders = self.getRemainders(belief)
         value = float(value)
 
-        sumValue = 0.0
+        maxCertaintyGlobal = 0.0
         if self.values:
-            sumValue = max(self.values.values())
-        maxValue = -10**10
-        remainderSum = 0.0
-        bestSolution = []
+            maxCertaintyGlobal = max(self.values.values())
+
+        maxCertainty = -10**10
+        maxCertaintyCombined = 0.0
+        bestRemainder = []
+        # Find the remainder containing the highest certainty value
+        # If there are more than one remainder containing the highest certainty value,
+        # choose the one with the highest combined certainty
         for r in remainders:
             tmpSum = sum(self.values[str(c)] for c in r)
             for c in r:
                 tmpValue = self.values[str(c)]
-                if tmpValue > maxValue:
-                    maxValue = tmpValue
-                    remainderSum = tmpSum
-                    bestSolution = r
-                elif tmpValue == maxValue:
-                    if tmpSum > remainderSum:
-                        bestSolution = r
-        maxVals = 0.0
-        for s in bestSolution:
-            if self.values[str(s)] > maxVals:
-                maxVals = self.values[str(s)]
-        if value > maxVals:
-            maxVals = value;
-        if maxVals < sumValue:
+                if tmpValue > maxCertainty:
+                    maxCertainty = tmpValue
+                    maxCertaintyCombined = tmpSum
+                    bestRemainder = r
+                elif tmpValue == maxCertainty:
+                    if tmpSum > maxCertaintyCombined:
+                        bestRemainder = r
+
+
+        if maxCertainty < maxCertaintyGlobal and value < maxCertaintyGlobal:
+            # By doing the revision we would remove some belief that we are more certain of
+            # than the belief that we are trying to add, so we decide not to do it
             return
 
-        self.beliefs = bestSolution
+        self.beliefs = bestRemainder
         self.add(self.beliefs, ~belief, value)
 
     def revision(self, belief, value):
