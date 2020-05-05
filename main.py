@@ -17,10 +17,10 @@ def printHelpMessage():
 
 def printAllowedOperators():
     print('Allowed operators:')
-    print('OR - |')
-    print('AND - &')
-    print('NEGATION - ~')
-    print('IMPLICATION - >>')
+    print('OR: |')
+    print('AND: &')
+    print('NEGATION: ~')
+    print('IMPLICATION: >>')
 
 def checkEntailment():
     print('Input formula to check:')
