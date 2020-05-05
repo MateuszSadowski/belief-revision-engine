@@ -26,7 +26,10 @@ def checkEntailment():
     print('Input formula to check:')
     formula = input('>>> ')
     print('')
-    print('Is formula entailed in the belief base: ' + str(beliefBase.resolution(beliefBase.beliefs, formula)))
+    try:
+        print('Is formula entailed in the belief base: ' + str(beliefBase.resolution(beliefBase.beliefs, formula)))
+    except:
+        print('Something went wrong, make sure the formula is correct and try again')
 
 def validateValue(value):
     value = float(value)
@@ -43,7 +46,10 @@ def revise():
     while not validateValue(value):
         print('Input certainty of the belief (from 0.0 to 1.0):')
         value = input('>>> ')
-    beliefBase.revision(formula, value)
+    try:
+        beliefBase.revision(formula, value)
+    except:
+        print('\nSomething went wrong, make sure the formula is correct and try again')
 
 def mainLoop():
     while True:

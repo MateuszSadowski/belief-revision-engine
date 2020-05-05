@@ -65,10 +65,3 @@ def resolve(c1,c2):
         clauses.append(associate(Or, new_disjunct)) 
 
     return clauses
-
-
-# c1 = (~p AND q)
-# c2 = ~(p OR ~q)
-
-# p&q --> p AND q
-# (p&q | s) --> (p OR s) AND (q OR s)
