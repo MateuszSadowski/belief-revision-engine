@@ -35,7 +35,7 @@ def validateValue(value):
     try:
         value = float(value)
     except:
-        print('Please input a number in the range of 0.0 to 1.0')
+        print('\nPlease input a number in the range of 0.0 to 1.0\n')
         return False
     if value < 0.0 or value > 1.0:
         print('\nPlease input certainty in the range of 0.0 to 1.0\n')
@@ -50,10 +50,10 @@ def revise():
     while not validateValue(value):
         print('Input certainty of the belief (from 0.0 to 1.0):')
         value = input('>>> ')
-    try:
-        beliefBase.revision(formula, value)
-    except:
-        print('\nSomething went wrong, make sure the formula is correct and try again')
+    # try:
+    beliefBase.revision(formula, value)
+    # except:
+    # print('\nSomething went wrong, make sure the formula is correct and try again')
 
 def mainLoop():
     while True:

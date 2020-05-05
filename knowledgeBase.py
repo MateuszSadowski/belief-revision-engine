@@ -131,7 +131,10 @@ class BeliefBase:
         self.add(self.beliefs, ~belief, value)
 
     def revision(self, belief, value):
-        # TODO: Fix case when adding the same formula or then allow to update values
         formula = to_cnf(belief)
+        if formula in self.beliefs:
+            # Revising with a formula already in the belief base is updating the certainty value for that formula
+            self.values[str(formula)] = float(value)
+            return
         negFormula = ~formula
         self.contraction(negFormula, value)
