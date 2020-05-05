@@ -27,7 +27,7 @@ class BeliefBase:
 
     def empty(self):
         self.beliefs = []
-        self.values = []
+        self.values = {}
 
     def add(self, base, belief, value=-1):
         formula = to_cnf(belief)
