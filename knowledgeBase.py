@@ -18,10 +18,16 @@ class BeliefBase:
         self.values = {}
     
     def print(self):
+        if len(self.beliefs) == 0:
+            print('Belief base is empty')
+            return
         print('Current beliefs:')
         for belief in self.beliefs:
             print(str(belief) + ', value: ' + str(self.values[str(belief)]))
-        print('')
+
+    def empty(self):
+        self.beliefs = []
+        self.values = []
 
     def add(self, base, belief, value=-1):
         # TODO: validate input (using resolution(?))
@@ -111,9 +117,12 @@ class BeliefBase:
 
     def contraction(self, belief, value):
         remainders = self.getRemainders(belief)
+        value = float(value)
 
-        print(remainders)
-        sumValue = max(self.values.values())
+        # print(remainders)
+        sumValue = 0.0
+        if self.values:
+            sumValue = max(self.values.values())
         maxValue = -10**10
         remainderSum = 0.0
         bestSolution = []
