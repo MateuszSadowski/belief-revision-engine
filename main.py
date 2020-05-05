@@ -32,9 +32,13 @@ def checkEntailment():
         print('Something went wrong, make sure the formula is correct and try again')
 
 def validateValue(value):
-    value = float(value)
+    try:
+        value = float(value)
+    except:
+        print('Please input a number in the range of 0.0 to 1.0')
+        return False
     if value < 0.0 or value > 1.0:
-        print('\nPlease input certainty in the range between 0.0 and 1.0\n')
+        print('\nPlease input certainty in the range of 0.0 to 1.0\n')
         return False
     return True
 
