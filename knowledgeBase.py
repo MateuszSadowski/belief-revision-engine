@@ -30,31 +30,18 @@ class BeliefBase:
         self.values = []
 
     def add(self, base, belief, value=-1):
-        # TODO: validate input (using resolution(?))
         # TODO: handle the case when value not passed
         formula = to_cnf(belief)
 
         base.append(formula)
         if value != -1:
             self.values[str(formula)] = value
-        # if not base:
-        #     base.append(formula)
-        #     if value != -1:
-        #         self.values[str(formula)] = value
-        # elif self.resolution(base, formula):
-        #     if formula not in base:
-        #         base.append(formula)
-        #     if value != -1:
-        #         self.values[str(formula)] = value
 
     def resolution(self, beliefBase, newBelief):
         tmpBeliefBase = []
         formula = to_cnf(newBelief)
         neg_formula = to_cnf(~formula)
-        # negate the formula
-        # formula = (q | ~p)
-        # ~formula = (~q & p) by De Morgans law
-        # q | ~p --> ~q | ~p
+
         tmpBeliefBase += helpFunctions.conjuncts(neg_formula)
         for belief in beliefBase:
             tmpBeliefBase += helpFunctions.conjuncts(belief)
@@ -78,8 +65,6 @@ class BeliefBase:
                 for x in result:
                     if x not in tmpBeliefBase:
                         tmpBeliefBase.append(x)
-                # tmpBeliefBase += list(result)
-                # tmpBeliefBase = helpFunctions.remove_dublicates(tmpBeliefBase)
 
     def getRemainders(self, belief):
         beliefCnf = to_cnf(belief)
@@ -89,10 +74,7 @@ class BeliefBase:
 
         solutions = []
         allBeliefs = self.beliefs
-        # allBeliefs = []
-        # for belief in self.beliefs:
-        #     allBeliefs += helpFunctions.conjuncts(belief)
-        # allBeliefs = helpFunctions.removeAllDuplicates(allBeliefs)
+
         def contract(beliefList, beliefToRemove):
             if len(beliefList) == 1:
                 if not self.resolution(beliefList, beliefToRemove):
@@ -119,7 +101,6 @@ class BeliefBase:
         remainders = self.getRemainders(belief)
         value = float(value)
 
-        # print(remainders)
         sumValue = 0.0
         if self.values:
             sumValue = max(self.values.values())
@@ -154,4 +135,3 @@ class BeliefBase:
         formula = to_cnf(belief)
         negFormula = ~formula
         self.contraction(negFormula, value)
-        # self.values[str(formula)] = value
