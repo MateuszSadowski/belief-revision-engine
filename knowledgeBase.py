@@ -19,7 +19,7 @@ class BeliefBase:
     
     def print(self):
         if len(self.beliefs) == 0:
-            print('Belief base is empty')
+            print('Knowledge base is empty')
             return
         print('Current beliefs:')
         for belief in self.beliefs:
@@ -54,7 +54,7 @@ class BeliefBase:
                 if False in resolvents:
                     # Arrived to contradiction
                     return True
-                # Add resolvent to belief base
+                # Add resolvent to knowledge base
                 result = result.union(set(resolvents))
 
             if result.issubset(set(tmpBeliefBase)):
@@ -68,7 +68,7 @@ class BeliefBase:
     def getRemainders(self, belief):
         beliefCnf = to_cnf(belief)
         if not self.resolution(self.beliefs, beliefCnf):
-            # Whole belief base is solution
+            # Whole knowledge base is solution
             return [self.beliefs]
 
         solutions = []
@@ -134,7 +134,7 @@ class BeliefBase:
     def revision(self, belief, value):
         formula = to_cnf(belief)
         if formula in self.beliefs:
-            # Revising with a formula already in the belief base is updating the certainty value for that formula
+            # Revising with a formula already in the knowledge base is updating the certainty value for that formula
             self.values[str(formula)] = float(value)
             return
         negFormula = ~formula

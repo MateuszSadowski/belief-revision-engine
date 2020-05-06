@@ -7,11 +7,11 @@ beliefBase = BeliefBase()
 
 def printHelpMessage():
     print('========================== MENU ===========================')
-    print('Print belief base - put \'p\'')
+    print('Print knowledge base - put \'p\'')
     print('Print allowed operators for formula input - put \'o\'')
-    print('Check if belief base entails formula - put \'c\'')
-    print('Revise belief base - put \'r\'')
-    print('Empty belief base - put \'e\'')
+    print('Check if knowledge base entails formula - put \'c\'')
+    print('Revise knowledge base - put \'r\'')
+    print('Empty knowledge base - put \'e\'')
     print('Quit - put \'q\'')
     print('===========================================================')
 
@@ -27,7 +27,7 @@ def checkEntailment():
     formula = input('>>> ')
     print('')
     try:
-        print('Is formula entailed in the belief base: ' + str(beliefBase.resolution(beliefBase.beliefs, formula)))
+        print('Is formula entailed in the knowledge base: ' + str(beliefBase.resolution(beliefBase.beliefs, formula)))
     except:
         print('Something went wrong, make sure the formula is correct and try again')
 
