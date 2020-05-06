@@ -138,4 +138,7 @@ class BeliefBase:
             self.values[str(formula)] = float(value)
             return
         negFormula = ~formula
+        if self.resolution([], negFormula):
+            print('\nInconsistent formulas cannot be added to the knowledge base')
+            return
         self.contraction(negFormula, value)
