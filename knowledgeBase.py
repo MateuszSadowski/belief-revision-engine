@@ -132,13 +132,13 @@ class BeliefBase:
 
     def revision(self, belief, value):
         formula = to_cnf(belief)
-        if formula in self.beliefs:
-            # Revising with a formula already in the knowledge base is updating the certainty value for that formula
-            self.values[str(formula)] = float(value)
-            return
         negFormula = ~formula
         if self.resolution([], negFormula):
             print('\nInconsistent formulas cannot be added to the knowledge base')
+            return
+        if formula in self.beliefs:
+            # Revising with a formula already in the knowledge base is updating the certainty value for that formula
+            self.values[str(formula)] = float(value)
             return
         self.contraction(negFormula, value)
         self.add(self.beliefs, formula, float(value))
