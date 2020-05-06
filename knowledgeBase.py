@@ -129,7 +129,6 @@ class BeliefBase:
             return
 
         self.beliefs = bestRemainder
-        self.add(self.beliefs, ~belief, value)
 
     def revision(self, belief, value):
         formula = to_cnf(belief)
@@ -142,3 +141,4 @@ class BeliefBase:
             print('\nInconsistent formulas cannot be added to the knowledge base')
             return
         self.contraction(negFormula, value)
+        self.add(self.beliefs, formula, float(value))
